@@ -47,9 +47,9 @@ namespace Shooter.Model
 
             Active = true;
 
-            Damage = 2;
+            Damage = 4;
 
-            projectileMoveSpeed = 20f;
+            projectileMoveSpeed = 15f;
         }
 
         public void Update()

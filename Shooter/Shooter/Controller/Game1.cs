@@ -460,7 +460,7 @@ namespace Shooter.Controller
             {
                 player.Position.Y += playerMoveSpeed;
             }
-            if (currentKeyboardState.IsKeyDown(Keys.F) || currentGamePadState.Buttons.A == ButtonState.Pressed)
+            if (currentKeyboardState.IsKeyDown(Keys.Z) || currentGamePadState.Buttons.A == ButtonState.Pressed)
             {
                 if (gameTime.TotalGameTime - previousFireTime > fireTime)
                 {
@@ -474,7 +474,7 @@ namespace Shooter.Controller
                      laserSound.Play();
                 }
             }
-            if (currentKeyboardState.IsKeyDown(Keys.R) || currentGamePadState.Buttons.B == ButtonState.Pressed)
+            if (currentKeyboardState.IsKeyDown(Keys.X) || currentGamePadState.Buttons.B == ButtonState.Pressed)
             {
                 if (gameTime.TotalGameTime - previousFireTime > fireTime)
                 {
