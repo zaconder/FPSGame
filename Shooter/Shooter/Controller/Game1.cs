@@ -56,6 +56,8 @@ namespace Shooter.Controller
 
         Texture2D projectileTexture;
         List<Projectile> projectiles;
+        Texture2D bigProjectileTexture;
+        List<Bigprojectile> bigprojectiles;
 
         // The rate of fire of the player laser
         TimeSpan fireTime;
@@ -118,6 +120,8 @@ namespace Shooter.Controller
 
             projectiles = new List<Projectile>();
 
+            bigprojectiles = new List<Bigprojectile>();
+
             // Set the laser to fire every quarter second
             fireTime = TimeSpan.FromSeconds(.15f);
 
@@ -161,6 +165,8 @@ namespace Shooter.Controller
             enemyTexture = Content.Load<Texture2D>("mineAnimation");
 
             projectileTexture = Content.Load<Texture2D>("laser");
+
+            bigProjectileTexture = Content.Load<Texture2D>("biglaser");
 
             explosionTexture = Content.Load<Texture2D>("explosion");
 
@@ -270,6 +276,15 @@ namespace Shooter.Controller
             Projectile projectile = new Projectile();
             projectile.Initialize(GraphicsDevice.Viewport, projectileTexture, position);
             projectiles.Add(projectile);
+
+           
+        }
+
+        private void AddBigProjectile(Vector2 position)
+        {
+            Bigprojectile bigprojectile = new Bigprojectile();
+            bigprojectile.Initialize(GraphicsDevice.Viewport, bigProjectileTexture, position);
+            bigprojectiles.Add(bigprojectile);
         }
 
         private void UpdateCollision()
@@ -330,6 +345,28 @@ namespace Shooter.Controller
                     {
                         enemies[j].Health -= projectiles[i].Damage;
                         projectiles[i].Active = false;
+                    }
+                }
+            }
+
+            for (int i = 0; i < bigprojectiles.Count; i++)
+            {
+                for (int j = 0; j < enemies.Count; j++)
+                {
+                    // Create the rectangles we need to determine if we collided with each other
+                    rectangle1 = new Rectangle((int)bigprojectiles[i].Position.X -
+                    bigprojectiles[i].Width / 2, (int)bigprojectiles[i].Position.Y -
+                    bigprojectiles[i].Height / 2, bigprojectiles[i].Width, bigprojectiles[i].Height);
+
+                    rectangle2 = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
+                    (int)enemies[j].Position.Y - enemies[j].Height / 2,
+                    enemies[j].Width, enemies[j].Height);
+
+                    // Determine if the two objects collided with each other
+                    if (rectangle1.Intersects(rectangle2))
+                    {
+                        enemies[j].Health -= bigprojectiles[i].Damage;
+                        bigprojectiles[i].Active = false;
                     }
                 }
             }
@@ -423,23 +460,42 @@ namespace Shooter.Controller
             {
                 player.Position.Y += playerMoveSpeed;
             }
+            if (currentKeyboardState.IsKeyDown(Keys.F) || currentGamePadState.Buttons.A == ButtonState.Pressed)
+            {
+                if (gameTime.TotalGameTime - previousFireTime > fireTime)
+                {
+                    // Reset our current time
+                     previousFireTime = gameTime.TotalGameTime;
+
+                    // Add the projectile, but add it to the front and center of the player
+                     AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+                    // Play the laser sound
+                     laserSound.Play();
+                }
+            }
+            if (currentKeyboardState.IsKeyDown(Keys.R) || currentGamePadState.Buttons.B == ButtonState.Pressed)
+            {
+                if (gameTime.TotalGameTime - previousFireTime > fireTime)
+                {
+                    // Reset our current time
+                    previousFireTime = gameTime.TotalGameTime;
+
+                    // Add the projectile, but add it to the front and center of the player
+                    AddBigProjectile(player.Position + new Vector2(player.Width / 2, 0));
+
+                    // Play the laser sound
+                    laserSound.Play();
+                }
+            }
+
 
             // Make sure that the player does not go out of bounds
             player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
             player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
 
             // Fire only every interval we set as the fireTime
-            if (gameTime.TotalGameTime - previousFireTime > fireTime)
-            {
-                // Reset our current time
-                previousFireTime = gameTime.TotalGameTime;
-
-                // Add the projectile, but add it to the front and center of the player
-                AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
-
-                // Play the laser sound
-                laserSound.Play();
-            }
+            
 
             // reset score if player health goes to zero
             if (player.Health <= 0)
@@ -459,6 +515,16 @@ namespace Shooter.Controller
                 if (projectiles[i].Active == false)
                 {
                     projectiles.RemoveAt(i);
+                }
+            }
+
+            for (int i = bigprojectiles.Count - 1; i >= 0; i--)
+            {
+                bigprojectiles[i].Update();
+
+                if (bigprojectiles[i].Active == false)
+                {
+                    bigprojectiles.RemoveAt(i);
                 }
             }
         }
@@ -490,6 +556,11 @@ namespace Shooter.Controller
             for (int i = 0; i < projectiles.Count; i++)
             {
                 projectiles[i].Draw(spriteBatch);
+            }
+
+            for (int i = 0; i < bigprojectiles.Count; i++)
+            {
+                bigprojectiles[i].Draw(spriteBatch);
             }
 
             // Draw the explosions

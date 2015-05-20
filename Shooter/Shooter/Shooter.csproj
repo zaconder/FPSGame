@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Animation.cs" />
+    <Compile Include="Model\Bigprojectile.cs" />
     <Compile Include="Model\Enemy.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Model\Projectile.cs" />
