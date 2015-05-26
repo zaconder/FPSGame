@@ -47,7 +47,7 @@ namespace Shooter.Model
 
             Active = true;
 
-            Damage = 4;
+            Damage = 6;
 
             projectileMoveSpeed = 15f;
         }
@@ -65,7 +65,7 @@ namespace Shooter.Model
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Position, null, Color.White, 0f,
-            new Vector2(Width / 2, Height / 2), 2f, SpriteEffects.None, 0f);
+            new Vector2(Width / 2, Height / 2), 4f, SpriteEffects.None, 0f);
         }
 
     }

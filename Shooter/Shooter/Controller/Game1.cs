@@ -503,6 +503,8 @@ namespace Shooter.Controller
                 player.Health = 100;
                 score = 0;
             }
+
+
         }
 
         private void UpdateProjectiles()
